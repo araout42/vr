@@ -1,5 +1,18 @@
 #include "server.h"
 
+int			receive_data(int csock)
+{
+ char buf[255];
+
+	memset(buf, 0, 255);
+ while (recv(csock, buf, 255, 0))
+ {
+	printf("%s", buf);
+	memset(buf, 0, 255);
+ }
+	return (0);
+}
+
 int			shlanch(void)
 {
 	socklen_t		recsize;
@@ -31,7 +44,10 @@ int			shlanch(void)
 			{
 				sock_err = listen(sock, 5);
 				if (sock_err != SOCKET_ERROR)
+				{
 					csock = accept(sock, (SOCKADDR *)&csin, &crecsize);
+					receive_data(csock);
+				}
 			closesocket(csock);
 			}
 			else
