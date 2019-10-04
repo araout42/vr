@@ -1,13 +1,21 @@
 #include "client.h"
 
-int		send_data(SOCKET sock)
+int		recv_data(SOCKET sock)
 {
 	char	buf[255];
+	int		size;
 
 	memset(buf, 0, 255);
-	while (read(1, buf, 255))
+	while ((size = recv(sock, buf, 255, 0)) >= 0)
 	{
-		send(sock, buf, strlen(buf), 0);
+		buf[size] = '\0';
+		printf("%s", buf);
+		if (!(strcmp(buf, "exit")))
+		{
+	printf("BLABLABLA");
+			send(sock, "exiting...", 10, 0);
+			closesocket(sock);
+		}
 		memset(buf, 0, 255);
 	}
 	return (0);
@@ -34,7 +42,7 @@ int		main(void)
 		if (connect(sock, (SOCKADDR *)&sin, sizeof(sin)) != SOCKET_ERROR)
 		{
 			printf("CONNECTED\n");
-			send_data(sock);
+			recv_data(sock);
 		}
 		else
 			printf("ERROR");
