@@ -1,11 +1,29 @@
 #include "server.h"
+int			choose_client(void)
+{
+	char	buf[255];
+	int		n;
+	printf("You have %d client\n -- Choose client --\n\n", g_sock.sock_nbr);
+
+	read(255, buf, 0);
+	n = atoi(buf);
+	if (n < 0)
+	{
+		printf("Wrong choice...\n");
+		choose_client();
+	}
+	else
+		g_sock.curr_sock = n;
+	return (0);
+}
+
 
 int			recv_data()
 {
 	char	buf[255];
 	
 	memset(buf, 0, 255);
-	while (recv(g_sock.csock, buf, 255, 0))
+	while (recv(g_sock.csock[g_sock.curr_sock], buf, 255, 0))
 	{
 		printf("%s", buf);
 		memset(buf, 0, 255);
@@ -20,7 +38,7 @@ int			send_data()
 	memset(buf, 0, 255);
 	while (read(1, buf, 255))
 	{
-		send(g_sock.csock, buf, strlen(buf), 0);
+		send(g_sock.csock[g_sock.curr_sock], buf, strlen(buf), 0);
 		memset(buf, 0, 255);
 	}
 	return (0);
@@ -31,10 +49,26 @@ int			send_recv(void)
 	int		fork_id;
 
 	fork_id = fork();
-	if (getpid() == fork_id)
+	if (fork_id == 0)
 		recv_data();
 	else
 		send_data();
+	return (0);
+}
+
+int			accept_connection(void)
+{
+	pid_t	fork_id;
+
+	g_sock.sock_nbr = 0;
+	fork_id = fork();
+	if (fork_id == 0)
+	{
+		while((g_sock.csock[g_sock.sock_nbr] = accept(g_sock.sock, ((SOCKADDR *)&(g_sock.csin)), &(g_sock.crecsize))) >= 0)
+			printf("HAHAHAHA\n");
+			g_sock.sock_nbr++;
+			choose_client();
+	}
 	return (0);
 }
 
@@ -56,17 +90,16 @@ int			shlanch(void)
 		{
 			g_sock.sin.sin_addr.s_addr = htons(INADDR_ANY);
 			g_sock.sin.sin_family = AF_INET;
-			g_sock.sin.sin_port = htons(44);
+			g_sock.sin.sin_port = htons(4444);
 			g_sock.sock_err = bind(g_sock.sock, (SOCKADDR *)&g_sock.sin, g_sock.recsize);
 			if (g_sock.sock_err != SOCKET_ERROR)
 			{
 				g_sock.sock_err = listen(g_sock.sock, 5);
 				if (g_sock.sock_err != SOCKET_ERROR)
 				{
-					g_sock.csock = accept(g_sock.sock, ((SOCKADDR *)&(g_sock.csin)), &(g_sock.crecsize));
+					accept_connection();
 					send_recv();
 				}
-			closesocket(g_sock.csock);
 			}
 			else
 				perror("listen : ");

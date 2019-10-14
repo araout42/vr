@@ -1,6 +1,6 @@
 #ifndef CLIENT_H
 # define CLIENT_H
-
+# include "libft.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -22,7 +22,19 @@
    typedef struct sockaddr_in SOCKADDR_IN;
    typedef struct sockaddr SOCKADDR;
    typedef int SOCKET;
+# elif defined (__APPLE__)
+#  include <sys/types.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <arpa/inet.h>
+#  define INVALID_SOCKET -1
+#  define SOCKET_ERROR -1
+#  define closesocket(s) close(s)
+   typedef struct sockaddr_in SOCKADDR_IN;
+   typedef struct sockaddr SOCKADDR;
+   typedef int SOCKET;
 # endif
 
+SOCKET		sock;
 #define MEM 214747477
 #endif

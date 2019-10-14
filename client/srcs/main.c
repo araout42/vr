@@ -1,21 +1,33 @@
 #include "client.h"
 
-int		recv_data(SOCKET sock)
+
+void		fexit(int	code)
+{
+	send(sock, "closing socket...\n", 255, 0);
+	send(sock, "Exiting client with code : ", 255, 0);
+	send(sock, ft_itoa(code), 255, 0);
+	closesocket(sock);
+	exit(code);
+}
+
+int			redir_cmd(char *cmd)
+{
+	if (!strcmp("exit", cmd))
+		fexit(0);
+	printf("qeqwe\n");
+	return (0);
+}
+
+int			recv_data(SOCKET sock)
 {
 	char	buf[255];
-	int		size;
+	int		len;
 
 	memset(buf, 0, 255);
-	while ((size = recv(sock, buf, 255, 0)) >= 0)
+	while ((len = recv(sock, buf, 255, 0)) > 0)
 	{
-		buf[size] = '\0';
-		printf("%s", buf);
-		if (!(strcmp(buf, "exit")))
-		{
-	printf("BLABLABLA");
-			send(sock, "exiting...", 10, 0);
-			closesocket(sock);
-		}
+		buf[len - 1] = '\0';
+		redir_cmd(buf);
 		memset(buf, 0, 255);
 	}
 	return (0);
@@ -25,7 +37,6 @@ int		main(void)
 {
 	int				error;
 	SOCKADDR_IN		sin;
-	SOCKET			sock;
 
 	#if defined (WIN32)
 		WSADATA wsa_data;
@@ -38,14 +49,14 @@ int		main(void)
 		sock = socket(AF_INET, SOCK_STREAM, 0);
 		sin.sin_addr.s_addr = inet_addr("127.0.0.1");
 		sin.sin_family = AF_INET;
-		sin.sin_port = htons(44);
+		sin.sin_port = htons(4444);
 		if (connect(sock, (SOCKADDR *)&sin, sizeof(sin)) != SOCKET_ERROR)
 		{
-			printf("CONNECTED\n");
 			recv_data(sock);
+			printf("apres send_recv\n");
 		}
 		else
-			printf("ERROR");
+			perror(NULL);
 		closesocket(sock);
 	}
 	#if defined (WIN32)

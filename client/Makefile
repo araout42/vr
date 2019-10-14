@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: modaouch <modaouch@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/06/20 17:03:40 by modaouch          #+#    #+#              #
-#    Updated: 2019/08/30 11:47:07 by araout           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = client
 
 SRC =	srcs/main.c\
@@ -17,10 +5,14 @@ SRC =	srcs/main.c\
 OBJ = $(SRC:.c=.o)
 
 HEADERS = includes/client.h\
+		  srcs/lib/libft.h\
 
 
+LIBPATH = srcs/lib
 
-INCLUDES = -Iincludes
+LIB = $(LIBPATH)/lib.a
+
+INCLUDES = -Iincludes -I$(LIBPATH)
 
 DEPEN = $(OBJ) Makefile $(HEADERS)
 
@@ -33,8 +25,10 @@ CFLAGS +=  -Wall -Wextra -Werror $(INCLUDES)
 
 all: $(NAME)
 
-$(NAME): $(DEPEN)
+$(NAME): lib $(DEPEN)
 	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $(NAME)
+lib:
+	make -C $(LIBPATH) all
 
 clean:
 	rm -f $(OBJ)
