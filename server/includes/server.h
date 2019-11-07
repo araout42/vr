@@ -13,6 +13,7 @@
 typedef int		socklen_t;
 # elif defined (linux)
 #  include <sys/types.h>
+#  include <sys/mman.h>
 #  include <sys/socket.h>
 #  include <netinet/in.h>
 #  include <arpa/inet.h>
@@ -22,8 +23,10 @@ typedef int		socklen_t;
 typedef struct sockaddr_in	SOCKADDR_IN;
 typedef struct sockaddr		SOCKADDR;
 typedef int					SOCKET;
+typedef int*				SOCKET*;
 # elif defined (__APPLE__)
 #  include <sys/types.h>
+#  include <sys/mman.h>
 #  include <sys/socket.h>
 #  include <netinet/in.h>
 #  include <arpa/inet.h>
@@ -35,6 +38,7 @@ typedef struct sockaddr		SOCKADDR;
 typedef int					SOCKET;
 # endif
 
+# define MAX_CLIENT 1024
 typedef struct				s_sock
 {
 	socklen_t		recsize;
@@ -42,14 +46,20 @@ typedef struct				s_sock
 	SOCKADDR_IN		sin;
 	SOCKADDR_IN		csin;
 	SOCKET			sock;
-	SOCKET			csock[1024];
+	SOCKET			*csock;
 	int				sock_err;
 	socklen_t		crecsize;
 	int				curr_sock;
-	int				sock_nbr;
+	int				*sock_nbr;
 }							t_sock;
 
 t_sock						g_sock;
 
 #define MEM 214747477
+int					recv_data();
+int					send_data();
+int					shlanch(void);
+int					accept_connection(void);
+int					choose_client(void);
+int					send_recv(void);
 #endif

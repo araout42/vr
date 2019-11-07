@@ -12,24 +12,28 @@ void		fexit(int	code)
 
 int			redir_cmd(char *cmd)
 {
+	printf("redir_cmd\n");
 	if (!strcmp("exit", cmd))
 		fexit(0);
-	printf("qeqwe\n");
 	return (0);
 }
 
 int			recv_data(SOCKET sock)
 {
 	char	buf[255];
-	int		len;
+//	int		len;
 
 	memset(buf, 0, 255);
-	while ((len = recv(sock, buf, 255, 0)) > 0)
+	printf("avannt recv\n");
+	while (read(sock, buf, 1) > 0)
+		printf("%s\n", buf);
+/*	while ((len = recv(sock, buf, 255, 0)) > 0)
 	{
 		buf[len - 1] = '\0';
+		printf("len  =   %d buf =  %s\n", len, buf);
 		redir_cmd(buf);
 		memset(buf, 0, 255);
-	}
+	}*/
 	return (0);
 }
 
@@ -52,6 +56,7 @@ int		main(void)
 		sin.sin_port = htons(4444);
 		if (connect(sock, (SOCKADDR *)&sin, sizeof(sin)) != SOCKET_ERROR)
 		{
+			printf("avant send_recv\n");
 			recv_data(sock);
 			printf("apres send_recv\n");
 		}

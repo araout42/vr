@@ -6,13 +6,15 @@
 #    By: modaouch <modaouch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/06/20 17:03:40 by modaouch          #+#    #+#              #
-#    Updated: 2019/08/30 11:47:07 by araout           ###   ########.fr        #
+#    Updated: 2019/11/04 23:47:04 by araout           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = server
 
 SRC =	srcs/main.c\
+		srcs/setsock.c\
+		srcs/communicate.c\
 
 OBJ = $(SRC:.c=.o)
 
