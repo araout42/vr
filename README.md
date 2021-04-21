@@ -16,3 +16,5 @@ result : 0/64 Virustotal - with a windows/meterpreter/revese_tcp from metasploit
 # ded.zip
 
 Zip archive hold a program that read and decrypt every recorded password in chrome and write them to a file in Temp/result (windows)
+
+yep
